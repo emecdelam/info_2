@@ -1,7 +1,5 @@
 package basics;
 
-import java.util.Arrays;
-
 
 /**
  * ***********
@@ -64,14 +62,35 @@ import java.util.Arrays;
 
  */
 public class Pascal {
-    public static int counter = 1;
-    public static int i = 0;
     /**
      * Computes the nth row of Pascal triangle
      *
      * @param n > 0
      * @return the nth row of Pascal triangle
      */
+    public static int[] pascal(int n) {
+        n -= 1;
+        int[] row = new int[n + 1];
+        row[0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            int prev = 1;
+            for (int j = 1; j < i; j++) {
+                int temp = row[j];
+                row[j] += prev;
+                prev = temp;
+            }
+            row[i] = 1;
+        }
+
+        return row;
+    }
+}
+/*
+RECURSIVE APPROACH :
+public class Pascal {
+    public static int counter = 0;
+    public static int i = 0;
     public static int[] pascal(int n) {
         i = n;
         return generateLine(new int[]{1});
@@ -92,3 +111,4 @@ public class Pascal {
 
     }
 }
+ */

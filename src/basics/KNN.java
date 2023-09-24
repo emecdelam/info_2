@@ -66,7 +66,7 @@ import java.util.Comparator;
  * from previous students. This historical data contains for each student:
  *  - the grades (on 100) obtained for each inginious exercise
  *  - if the student succeeded (true) at the exam or not (false)
- * <p>
+ *
  * The prediction algorithm that you have to write (method predictSuccess)
  * takes the exercise grades of the student and must do a "majority vote"
  * among the k previous students having the most similar scoring profile to
@@ -76,10 +76,10 @@ import java.util.Comparator;
  * similar the two students).
  * If the number of successes is strictly larger than k/2 among the k most
  * similar students, then the algorithm predicts success (true), false otherwise.
- * <p>
+ *
  * Here is an example where we have data of six students for two inginious
  * exercises:
- * <p>
+ *
  *   KNN.Student[] students = new KNN.Student[] {
  *     new KNN.Student(new double[]{90,91}, true),  // student_0
  *     new KNN.Student(new double[]{80,75}, true),  // student_1
@@ -88,7 +88,7 @@ import java.util.Comparator;
  *     new KNN.Student(new double[]{20,30}, false), // student_4
  *     new KNN.Student(new double[]{45,33}, false), // student_5
  *   };
- * <p>
+ *
  * Now, let's try to predict the success of a new student X who got the
  * grades [88,95] at the exercises:
  * If we calculate the distance between this new student and the other six
@@ -97,10 +97,10 @@ import java.util.Comparator;
  * succeeded and student_2 failed the exam. This means we have 2 x true
  * and 1 x false (majority true), thus the method should predict a
  * success for student X:
- * <p>
+ *
  *    double [] goodResults = new double[]{88,95};
  *    assertTrue(KNN.predictSuccess(students,goodResults,3));
- * <p>
+ *
  * Your implementation of predict success should execute in O(n.log(n))
  * where n is the number of historical data.
  * Notice that this is the time complexity of the best sort algorithm

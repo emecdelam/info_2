@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="JavaGrader-1.0.6">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/programming_concepts_students-master/programming_concepts_students-master/libs/JavaGrader-1.0.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/JavaGrader-1.0.6.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

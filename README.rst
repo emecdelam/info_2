@@ -26,7 +26,7 @@ Everyone can contribute!!! If you have :
 - **a different solution**
 - **more Tests**
 - **a better solution**
-- **a better explanations**
+- **better explanations**
 - *or you simply want to add comments*
 
 just make a pull request.

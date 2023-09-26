@@ -1,5 +1,6 @@
 package basics;
-import java.util.LinkedList;
+import java.util.BitSet;
+
 @SuppressWarnings("unused")
 public class MagicSquare {
     /*
@@ -23,70 +24,34 @@ public class MagicSquare {
      * @return true if matrix is a n x n magic square, false otherwise
      */
 
-
-
     public static boolean isMagicSquare(int [][] matrix) {
-        return containsEveryInt(matrix) && sumRows(matrix) && sumColumns(matrix) && sumDiagonals(matrix);
-    }
-    public static int sum(int[] arr) {int total = 0;for (int element : arr) {total += element;}return total;}
-    public static boolean sumRows(int[][] matrix){
-        if (matrix.length == 0) {
-            return true;
-        }
-        int first_sum = sum(matrix[0]);
-        for (int i = 1; i < matrix.length; i++) {
-            if (sum(matrix[i]) != first_sum) {
-                return false;
-            }
-        }
-        return true;
-    }
-    public static boolean sumColumns(int[][] matrix){
-        if (matrix.length == 0) {
-            return true;
-        }
+        int n = (int) Math.pow(matrix.length,2);
+        BitSet set = new BitSet(n);
+        set.flip(1,n+1);
         int first_sum = 0;
-        for (int[] ints : matrix) {
-            first_sum += ints[0];
-        }
-        for (int i=0;i<matrix[0].length;i++){
-            int column_sum = 0;
-            for (int[] row : matrix) {
-                column_sum+=row[i];
-            }
-            if (column_sum != first_sum){
-                return false;
-            }
-        }
-        return true;
-    }
-    public static boolean sumDiagonals(int[][] matrix){
-        if (matrix.length == 0 || matrix.length!=matrix[0].length) {
-            return true;
-        }
-        int first_sum = 0;
-        for (int i =0;i< matrix.length;i++){
-            first_sum += matrix[i][i];
-        }
         int second_sum = 0;
-        for (int i = 0;i< matrix.length;i++){
-            second_sum += matrix[i][matrix.length-1-i];
+        int first_diag_sum = 0;
+        int second_diag_sum = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            second_sum += matrix[i][0];
+            first_sum += matrix[0][i];
         }
-        return first_sum == second_sum;
-    }
-    public static boolean containsEveryInt(int[][] matrix){
-        LinkedList<Integer> linked_list = new LinkedList<>();
-        for (int i = 1; i <= Math.pow(matrix.length,2); i++) {
-            linked_list.add(i);
-        }
-        for (int[] row:matrix){
-            for (int element:row){
-                if (!linked_list.contains(element)){
-                    return false;
+        for (int i = 0; i < matrix.length; i++) {
+            first_diag_sum += matrix[i][i];
+            second_diag_sum += matrix[i][matrix.length-1-i];
+            int column_sum = 0;
+            int row_sum = 0;
+            for (int j = 0; j < matrix.length; j++) {
+                column_sum+=matrix[j][i];
+                row_sum+=matrix[i][j];
+                if (set.get(matrix[j][i])){
+                    set.flip(matrix[j][i]);
                 }
-                linked_list.remove((Integer) element);
             }
+            if (column_sum != second_sum){return false;}
+            if (row_sum != first_sum){return false;}
         }
-        return true;
+        if (!(set.cardinality() == 0)){return false;}
+        return first_diag_sum == second_diag_sum;
     }
 }

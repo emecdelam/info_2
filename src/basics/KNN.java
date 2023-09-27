@@ -150,6 +150,4 @@ public class KNN {
         }
         return Math.sqrt(dist);
     }
-
-
 }

@@ -50,7 +50,3 @@ This will clone the repository to your local machine.
 
 After downloading the zip, create a new project and extract the contents of the zip file into the project folder.
 
-
-
-
-xoxo <3

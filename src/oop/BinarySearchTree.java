@@ -1,7 +1,6 @@
 package oop;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -63,19 +62,13 @@ public class BinarySearchTree {
      */
     public List<Integer> decreasing() {
         List<Integer> list = new ArrayList<>();
-        Node current = this.root;
-        System.out.println(current.key);
-        System.out.println(current.left.key+ " "+current.right.key);
-        current = current.right;
-        System.out.println(current.left.key+ " "+current.right.key);
-        current=current.left;
-        System.out.println(current.left.key+ " "+current.right.key);
+        inOrderTraversal(root, list);
         return list;
     }
-
-
-
-
-
-
+    private void inOrderTraversal(Node node, List<Integer> list) {
+        if (node == null) return;
+        inOrderTraversal(node.right, list);
+        list.add(node.key);
+        inOrderTraversal(node.left, list);
+    }
 }

@@ -2,8 +2,10 @@ package fp;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -11,11 +13,11 @@ import java.util.stream.StreamSupport;
  */
 @SuppressWarnings("unused")
 public class PrimeNumber {
-    public static BitSet bits;
+    public static BitSet bits; //You should work on this BitSet
 
     public static LinkedList<Integer> primesUntil(int n){
         bits = new BitSet(n);
-        bits.flip(2,n);
+        bits.flip(2,n); //2 being the first prime and is at the second place
         for (int i = 2; i * i <= n; i++){
             if(bits.get(i)) {
                 for (int j = i * i; j <= n;j += i){
@@ -72,24 +74,52 @@ public class PrimeNumber {
      */
 
     public static IntStream primeGapStreamFrom(int from) {
-        BiFunction<Integer,Integer,Integer> func = (a,b) -> b - a;
-        Spliterator<Integer> aSpliterator = primeStreamFrom(from).boxed().spliterator();
-        Spliterator<Integer> bSpliterator = primeStreamFrom(from).skip(1).boxed().spliterator();
-        Iterator<Integer> aIterator = Spliterators.iterator(aSpliterator);
-        Iterator<Integer> bIterator = Spliterators.iterator(bSpliterator);
-        Iterator<Integer> iterator = new Iterator<>() {
+        Iterator<Integer> iterator = primeStreamFrom(from).iterator();
+        IntSupplier supplier = new IntSupplier() {
+            private int current;
+            private int next = iterator.next();
+            @Override
+            public int getAsInt() {
+                current = next;
+                next = iterator.next();
+                return next - current;
+            }
+        };
+        return IntStream.generate(supplier);
+    }
+
+    public static <A, B, C> Stream<C> zip(Stream<? extends A> a,
+                                          Stream<? extends B> b,
+                                          BiFunction<? super A, ? super B, ? extends C> zipper) {
+        Objects.requireNonNull(zipper);
+        Spliterator<? extends A> aSpliterator = Objects.requireNonNull(a).spliterator();
+        Spliterator<? extends B> bSpliterator = Objects.requireNonNull(b).spliterator();
+
+        // Zipping looses DISTINCT and SORTED characteristics
+        int characteristics = aSpliterator.characteristics() & bSpliterator.characteristics() &
+                ~(Spliterator.DISTINCT | Spliterator.SORTED);
+
+        long zipSize = ((characteristics & Spliterator.SIZED) != 0)
+                ? Math.min(aSpliterator.getExactSizeIfKnown(), bSpliterator.getExactSizeIfKnown())
+                : -1;
+
+        Iterator<? extends A> aIterator = Spliterators.iterator(aSpliterator);
+        Iterator<? extends B> bIterator = Spliterators.iterator(bSpliterator);
+        Iterator<C> cIterator = new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return aIterator.hasNext() && bIterator.hasNext();
             }
 
             @Override
-            public Integer next() {
-                return func.apply(aIterator.next(), bIterator.next());
+            public C next() {
+                return zipper.apply(aIterator.next(), bIterator.next());
             }
         };
-        int characteristics = aSpliterator.characteristics() & bSpliterator.characteristics() & ~(Spliterator.DISTINCT | Spliterator.SORTED);
-        long size = ((characteristics & Spliterator.SIZED) != 0) ? Math.min(aSpliterator.getExactSizeIfKnown(), bSpliterator.getExactSizeIfKnown()) : -1;
-        return StreamSupport.stream(Spliterators.spliterator(iterator,size ,characteristics ),false).mapToInt(Integer::intValue);
+
+        Spliterator<C> split = Spliterators.spliterator(cIterator, zipSize, characteristics);
+        return (a.isParallel() || b.isParallel())
+                ? StreamSupport.stream(split, true)
+                : StreamSupport.stream(split, false);
     }
 }

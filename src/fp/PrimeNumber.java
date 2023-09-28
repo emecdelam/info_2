@@ -1,35 +1,14 @@
 package fp;
 
-import java.util.*;
+import java.util.Iterator;
 import java.util.function.IntSupplier;
-import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
 
 /**
  *
  */
-@SuppressWarnings("unused")
 public class PrimeNumber {
-    public static BitSet bits; //You should work on this BitSet
 
-    public static LinkedList<Integer> primesUntil(int n){
-        bits = new BitSet(n);
-        bits.flip(2,n); //2 being the first prime and is at the second place
-        for (int i = 2; i * i <= n; i++){
-            if(bits.get(i)) {
-                for (int j = i * i; j <= n;j += i){
-                    bits.clear(j);
-                }
-            }
-        }
-        LinkedList<Integer> primes = new LinkedList<>();
-        for (int i=0;i<bits.length();i++){
-            if (bits.get(i)){
-                primes.add(i);
-            }
-        }
-        return primes;
-    }
     /**
      * Check that number is prime (can be divided by 1 and himself)
      *
@@ -37,13 +16,12 @@ public class PrimeNumber {
      * @return true if number is prime, false otherwise
      */
     public static boolean isPrime(int number) {
-        if (number == 0){
-            return false;
-        } if (number == 1){
-            return true;
+        for (int i = 2; i <= Math.sqrt(number); i += 1) {
+            if (number % i == 0) {
+                return false;
+            }
         }
-        LinkedList<Integer> primes = primesUntil(number+1);
-        return primes.contains(number);
+        return number != 0;
     }
 
     /**
@@ -52,8 +30,7 @@ public class PrimeNumber {
      * @return an infinite stream from, from+1, from+2, ...
      */
     public static IntStream streamFrom(int from) {
-        IntUnaryOperator op = a -> a+1;
-        return IntStream.iterate(from,op);
+         return IntStream.iterate(from, n -> n+1);
     }
 
     public static IntStream primeStreamFrom(int from) {
@@ -66,21 +43,26 @@ public class PrimeNumber {
      * starting at the first prime number larger or equal to from.
      * Example: from = 5 (5, 7, 11, 13, 17, 19, ...) , the stream of prime gaps is thus 2, 4, 2, 4, 2, ...
      *
-     * @param from int
+     * @param from
      * @return an infinite stream of prime gaps
      */
-
     public static IntStream primeGapStreamFrom(int from) {
+        //Converting to iterator because then we have next() method.
         Iterator<Integer> iterator = primeStreamFrom(from).iterator();
-        IntSupplier supplier = new IntSupplier() {
-            private int next = iterator.next();
+        class GapSupplier implements IntSupplier {
+            int next = iterator.next();
             @Override
             public int getAsInt() {
                 int current = next;
                 next = iterator.next();
                 return next - current;
             }
-        };
+        }
+        GapSupplier supplier = new GapSupplier();
         return IntStream.generate(supplier);
+
+
+
     }
+
 }

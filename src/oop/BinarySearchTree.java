@@ -62,6 +62,7 @@ public class BinarySearchTree {
      */
     public List<Integer> decreasing() {
         List<Integer> list = new ArrayList<>();
+
         inOrderTraversal(root, list);
         return list;
     }

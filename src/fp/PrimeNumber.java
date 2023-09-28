@@ -2,6 +2,7 @@ package fp;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -73,9 +74,18 @@ public class PrimeNumber {
      */
 
     public static IntStream primeGapStreamFrom(int from) {
-        IntStream primeStream = primeStreamFrom(from);
-        IntStream shiftedStream = primeStream.skip(1);
-        return zip(primeStreamFrom(from).boxed(),shiftedStream.boxed(), (a, b) -> b - a ).mapToInt(Integer::intValue);
+        Iterator<Integer> iterator = primeStreamFrom(from).iterator();
+        IntSupplier supplier = new IntSupplier() {
+            private int current;
+            private int next = iterator.next();
+            @Override
+            public int getAsInt() {
+                current = next;
+                next = iterator.next();
+                return next - current;
+            }
+        };
+        return IntStream.generate(supplier);
     }
 
     public static <A, B, C> Stream<C> zip(Stream<? extends A> a,

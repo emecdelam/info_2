@@ -56,7 +56,6 @@ public class PrimeNumberTest {
     @Grade(value = 1, cpuTimeout = 1000)
     public void testInfiniteStreamOfPrimeGaps2() {
         IntStream streamInf = PrimeNumber.primeGapStreamFrom(8191);
-        assert streamInf != null;
         assertArrayEquals(streamInf.limit(20).toArray(), new int[]{18, 10, 2, 10, 2, 4, 6, 20, 6, 4, 14, 4, 2, 4, 14, 6, 12, 24, 10, 6});
     }
 

@@ -1,12 +1,9 @@
 package fp;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  *

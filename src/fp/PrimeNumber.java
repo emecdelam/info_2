@@ -34,7 +34,7 @@ public class PrimeNumber {
     }
 
     public static IntStream primeStreamFrom(int from) {
-        return IntStream.iterate(from, n -> n+1).filter(PrimeNumber::isPrime);
+        return streamFrom(from).filter(PrimeNumber::isPrime);
     }
 
     /**

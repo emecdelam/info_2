@@ -3,6 +3,7 @@ package oop;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Your task is to control a robot using a sequence of textual
@@ -141,9 +142,11 @@ public class RobotActionFactory {
         public void add(Action action) {
             actions.add(action);
         }
+
         @Override
         public void apply(Robot robot) {
-            for (Action action : actions){
+            for (int i = 0; i < actions.size(); i += 1) {
+                Action action = actions.get(i);
                 action.apply(robot);
             }
         }
@@ -171,7 +174,7 @@ public class RobotActionFactory {
 
         @Override
         public void apply(Robot robot) {
-            for (int i = 0 ; i < times ; i++){
+            for (int i = 0; i < times; i += 1) {
                 action.apply(robot);
             }
         }
@@ -192,61 +195,62 @@ public class RobotActionFactory {
      * @return An "Action" object that will move the robot
      * according to the commands.
      **/
-    public Action parse(String[] commands) {
+    public Action parse(String commands[]) {
         SequenceOfActions sequence = new SequenceOfActions();
-        int index = 0;
-        int skip = 0;
-        while (index < commands.length) {
-            String command = commands[index];
-            index++;
-            if (command.equals("FORWARD")) {
-                sequence.add(new MoveForwardAction());
-            } else if (command.equals("LEFT")) {
-                sequence.add(new TurnLeftAction());
-            } else if (command.equals("RIGHT")) {
-                sequence.add(new TurnRightAction());
-            } else if (command.matches("REPEAT \\d+")) {
-                skip++;
-                int repeatCount = Integer.parseInt(command.split(" ")[1]);
-                String[] array = Arrays.copyOfRange(commands,index,commands.length);
-                Action res = parse(array);
-                sequence.add(new RepeatAction(repeatCount,res));
-                if (lengthLoop(array) > 0){
-                    index += lengthLoop(array) ;
-                } else {
-                    throw new IllegalArgumentException("Missing END REPEAT statement");
-                }
-
-            } else if (command.equals("END REPEAT")) {
-                skip--;
-                if (skip < 0) {
-                    return sequence;
-                }
-            }else {
-                throw new IllegalArgumentException("Unknow command");
+        int pointer = 0;
+        while (pointer < commands.length) {
+            String command = commands[pointer];
+            System.out.println("Processing command "+command);
+            if (command.isEmpty()) {
+                continue;
             }
+            switch (command) {
+                case "FORWARD":
+                    sequence.add(new MoveForwardAction());
+                    break;
+                case "RIGHT":
+                    sequence.add(new TurnRightAction());
+                    break;
+                case "LEFT":
+                    sequence.add(new TurnLeftAction());
+                    break;
+                default:
+                    if (!command.contains("REPEAT")) {
+                        throw new IllegalArgumentException("Unknown action" + command);
+                    }
+                    //Here we are in the repeat case.
+                    String[] subs = command.split(" ");
+                    int repeatTime = Integer.parseInt(subs[1]);
+                    int nestedCount = 1;
+                    int rep_pointer = pointer + 1;
+                    while (rep_pointer < commands.length) {
+                        String line = commands[rep_pointer];
+                        if (line.contains("REPEAT")) {
+                            if (line.contains("END")) {
+                                nestedCount -= 1;
+                                if (nestedCount == 0) {
+                                    break;
+                                }
+                            } else {
+                                nestedCount += 1;
+                            }
 
-
-        }
-        if( skip > 0){
-            throw new IllegalArgumentException("Missing END REPEAT statement");
+                        }
+                        rep_pointer += 1;
+                    }
+                    if (nestedCount != 0) {
+                        throw new IllegalArgumentException("Missing END REPEAT");
+                    }
+                    String[] to_repeat = Arrays.copyOfRange(commands, pointer+1, rep_pointer);
+                    RepeatAction action = new RepeatAction(repeatTime, parse(to_repeat));
+                    sequence.add(action);
+                    pointer = rep_pointer;
+            }
+            pointer += 1;
         }
         return sequence;
     }
-    private int lengthLoop(String[] array){
-        int skip = 0;
-        int count = 0;
-        for (String command : array){
-            if (command.matches("REPEAT \\d+")){
-                skip ++;
-            } else if (command.equals("END REPEAT")) {
-                skip--;
-                if (skip<0){
-                    return count;
-                }
-            }
-            count ++;
-        }
-        return -1;
-    }
+
+
+
 }

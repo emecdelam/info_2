@@ -209,10 +209,8 @@ public class RobotActionFactory {
                 skip++;
                 int repeatCount = Integer.parseInt(command.split(" ")[1]);
                 String[] array = Arrays.copyOfRange(commands,index,commands.length);
-                for (int i =0; i < repeatCount;i++){
-                    Action res = parse(array);
-                    sequence.add(res);
-                }
+                Action res = parse(array);
+                sequence.add(new RepeatAction(repeatCount,res));
                 if (lengthLoop(array) > 0){
                     index += lengthLoop(array) ;
                 } else {
@@ -239,7 +237,6 @@ public class RobotActionFactory {
         int skip = 0;
         int count = 0;
         for (String command : array){
-
             if (command.matches("REPEAT \\d+")){
                 skip ++;
             } else if (command.equals("END REPEAT")) {

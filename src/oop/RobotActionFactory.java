@@ -145,8 +145,7 @@ public class RobotActionFactory {
 
         @Override
         public void apply(Robot robot) {
-            for (int i = 0; i < actions.size(); i += 1) {
-                Action action = actions.get(i);
+            for (Action action : actions) {
                 action.apply(robot);
             }
         }

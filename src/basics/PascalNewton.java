@@ -64,7 +64,7 @@ import java.util.Arrays;
  *
 
  */
-public class Pascal {
+public class PascalNewton {
 
     /**
      * Computes the nth row of Pascal triangle

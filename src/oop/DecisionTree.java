@@ -1,5 +1,7 @@
 package oop;
 
+import java.util.zip.DataFormatException;
+
 public abstract class DecisionTree {
 
     /**
@@ -51,7 +53,7 @@ public abstract class DecisionTree {
      *         the feature at featureIndex is true, the right tree is used otherwise
      */
     public static DecisionTree splitNode(int featureIndex, DecisionTree left, DecisionTree right) {
-        return null;
+        return new SplitNode(featureIndex,right,left);
     }
 
     /**
@@ -60,7 +62,36 @@ public abstract class DecisionTree {
      * @return a decision tree that always predicts label
      */
     public static DecisionTree decisionNode(boolean label) {
-        return null;
+        return new LeafNode(label);
     }
 
+}
+class SplitNode extends DecisionTree{
+    private int index;
+    private DecisionTree right;
+    private DecisionTree left;
+    public SplitNode(int index,DecisionTree right,DecisionTree left){
+        this.index = index;
+        this.right = right;
+        this.left = left;
+    }
+
+    @Override
+    public boolean predict(boolean[] features) {
+        if (features[index]){
+            return left.predict(features);
+        } else {
+            return right.predict(features);
+        }
+    }
+}
+class LeafNode extends DecisionTree{
+    private final boolean label;
+    public LeafNode(boolean label) {
+        this.label = label;
+    }
+    @Override
+    public boolean predict(boolean[] features) {
+        return label;
+    }
 }

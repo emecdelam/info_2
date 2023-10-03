@@ -72,6 +72,7 @@ public class ExamGrader {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         Future<Integer> future1 = executorService.submit(()->calculateExamGrade(exam1,roundingFunction));
         Future<Integer> future2 = executorService.submit(()->calculateExamGrade(exam2,roundingFunction));
+        executorService.shutdown();
         int[] list = new int[2];
         try {
             list[0] = future1.get();

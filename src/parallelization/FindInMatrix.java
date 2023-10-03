@@ -68,6 +68,7 @@ public class FindInMatrix {
             Future<Result> future = executorService.submit(task);
             futureresults.add(future);
         }
+        executorService.shutdown();
         Result maxres = null;
         int max = 0;
         for (Future<Result> future : futureresults){

@@ -32,8 +32,8 @@ public class PhysicsSolver {
          * @param b The second number.
          * @return <code>true</code> iff. the numbers are equal.
          **/
-        static public final boolean areSameDoubles(double a,
-                                                   double b) {
+        static public boolean areSameDoubles(double a,
+                                             double b) {
             final double THRESHOLD = 0.0001;
             return Math.abs(a - b) < THRESHOLD;
         }
@@ -186,12 +186,25 @@ public class PhysicsSolver {
 
         @Override
         public boolean update() {
+            if (factor1_.hasValue() && factor2_.hasValue() && !product_.hasValue()) {
+                product_.setValue(factor1_.getValue() * factor2_.getValue());
+                return true;
+            } else if (factor1_.hasValue() && product_.hasValue() && !factor2_.hasValue()) {
+                factor2_.setValue(product_.getValue() / factor1_.getValue());
+                return true;
+            } else if (factor2_.hasValue() && product_.hasValue() && !factor1_.hasValue()) {
+                factor1_.setValue(product_.getValue() / factor2_.getValue());
+                return true;
+            }
             return false;
         }
 
+
         @Override
         public void clearValues() {
-
+            this.product_.clearValue();
+            this.factor1_.clearValue();
+            this.factor2_.clearValue();
         }
     }
 
@@ -248,12 +261,26 @@ public class PhysicsSolver {
 
         @Override
         public boolean update() {
+            if (number_.hasValue()){
+                double result = Math.pow(number_.getValue(),2);
+                if (!square_.hasValue() || !Slot.areSameDoubles(square_.getValue(), result)) {
+                    square_.setValue(result);
+                    return true;
+                }
+            } else if (square_.hasValue()){
+                double result = Math.sqrt(square_.getValue());
+                if (!number_.hasValue() || !Slot.areSameDoubles(number_.getValue(), result)) {
+                    number_.setValue(result);
+                    return true;
+                }
+            }
             return false;
         }
 
         @Override
         public void clearValues() {
-
+            this.square_.clearValue();
+            this.number_.clearValue();
         }
     }
 

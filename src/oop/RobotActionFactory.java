@@ -133,6 +133,7 @@ public class RobotActionFactory {
      **/
     private static class SequenceOfActions implements Action {
         private List<Action> actions = new LinkedList<Action>();
+        public int length = 0;
 
         /**
          * Append a new action to the end of the sequence of actions.
@@ -140,10 +141,12 @@ public class RobotActionFactory {
          **/
         public void add(Action action) {
             actions.add(action);
+            length++;
         }
+
         @Override
         public void apply(Robot robot) {
-            for (Action action : actions){
+            for (Action action : actions) {
                 action.apply(robot);
             }
         }
@@ -171,7 +174,7 @@ public class RobotActionFactory {
 
         @Override
         public void apply(Robot robot) {
-            for (int i = 0 ; i < times ; i++){
+            for (int i = 0; i < times; i++) {
                 action.apply(robot);
             }
         }
@@ -192,61 +195,40 @@ public class RobotActionFactory {
      * @return An "Action" object that will move the robot
      * according to the commands.
      **/
-    public Action parse(String[] commands) {
+    public Action parse(String commands[]) {
         SequenceOfActions sequence = new SequenceOfActions();
-        int index = 0;
-        int skip = 0;
-        while (index < commands.length) {
-            String command = commands[index];
-            index++;
-            if (command.equals("FORWARD")) {
-                sequence.add(new MoveForwardAction());
-            } else if (command.equals("LEFT")) {
-                sequence.add(new TurnLeftAction());
-            } else if (command.equals("RIGHT")) {
-                sequence.add(new TurnRightAction());
-            } else if (command.matches("REPEAT \\d+")) {
-                skip++;
-                int repeatCount = Integer.parseInt(command.split(" ")[1]);
-                String[] array = Arrays.copyOfRange(commands,index,commands.length);
-                Action res = parse(array);
-                sequence.add(new RepeatAction(repeatCount,res));
-                if (lengthLoop(array) > 0){
-                    index += lengthLoop(array) ;
-                } else {
-                    throw new IllegalArgumentException("Missing END REPEAT statement");
-                }
+        for (int i = 0; i < commands.length; i++) {
+            switch (commands[i].charAt(0)) {
+                case 'F' :
+                    sequence.add(new MoveForwardAction());
+                    break;
 
-            } else if (command.equals("END REPEAT")) {
-                skip--;
-                if (skip < 0) {
+                case 'L' :
+                    sequence.add(new TurnLeftAction());
+                    break;
+
+                case 'R' :
+                    switch (commands[i].charAt(1)) {
+                        case 'I' :
+                            sequence.add(new TurnRightAction());
+                            break;
+
+                        case 'E' :
+                            int times = Integer.parseInt(commands[i].split(" ")[1]);
+                            SequenceOfActions actionSequence = (SequenceOfActions)parse(Arrays.copyOfRange(commands, i + 1 /*i++ breaks obv*/, commands.length));
+                            sequence.add(new RepeatAction(times, actionSequence));
+                            i += actionSequence.length + 1;
+                            break;
+                    }
+                    break;
+
+                case 'E' :
                     return sequence;
-                }
-            }else {
-                throw new IllegalArgumentException("Unknow command");
             }
-
-
-        }
-        if( skip > 0){
-            throw new IllegalArgumentException("Missing END REPEAT statement");
         }
         return sequence;
     }
-    private int lengthLoop(String[] array){
-        int skip = 0;
-        int count = 0;
-        for (String command : array){
-            if (command.matches("REPEAT \\d+")){
-                skip ++;
-            } else if (command.equals("END REPEAT")) {
-                skip--;
-                if (skip<0){
-                    return count;
-                }
-            }
-            count ++;
-        }
-        return -1;
-    }
+
+
+
 }

@@ -1,12 +1,12 @@
 package parallelization;
 
-        import java.util.ArrayList;
-        import java.util.Arrays;
-        import java.util.List;
-        import java.util.concurrent.ExecutionException;
-        import java.util.concurrent.ExecutorService;
-        import java.util.concurrent.Future;
-        import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.function.Function;
 
 public class BrickCounter {
     /**

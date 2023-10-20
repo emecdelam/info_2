@@ -32,6 +32,7 @@ public class BrickCounterTest {
             return size;
         }
     }
+
     @Test()
     @Grade(value = 2, cpuTimeout = 1000)
     public void testThreadsOneBricks() {

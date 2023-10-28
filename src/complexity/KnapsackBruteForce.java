@@ -14,6 +14,18 @@ public class KnapsackBruteForce {
         }
     }
 
+    /**
+     * Returns the maximum value that can be put in a knapsack with the given capacity.
+     * Each item can only be selected once. If you pack an item it consumes its weight in the capacity
+     * Your algorithm should implement a brute-force appraoch with a time comlexity
+     * of O(2^n) where n is the number of items.
+     *
+     * @param items
+     * @param capacity
+     * @param i
+     * @return
+     */
+
     public static int knapsack(Item[] items, int capacity) {
 
         if (items.length == 0) {

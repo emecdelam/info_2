@@ -27,5 +27,4 @@ public class PhysicsSolverTest {
         PhysicsSolver.Slot s = new PhysicsSolver.Slot();
         assertThrows(RuntimeException.class, () -> s.getValue());
     }
-
 }

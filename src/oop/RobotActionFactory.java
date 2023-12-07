@@ -195,40 +195,46 @@ public class RobotActionFactory {
      * @return An "Action" object that will move the robot
      * according to the commands.
      **/
-    public Action parse(String commands[]) {
+    public Action parse(String[] commands) {
         SequenceOfActions sequence = new SequenceOfActions();
+        int count = 0;
+        for (String command:commands){
+            if (command.startsWith("REPEAT")){count++;} else if (command.startsWith("END")) {count--;}
+        }
+        if (count > 0){throw new IllegalArgumentException("Missing END statement");}
         for (int i = 0; i < commands.length; i++) {
-            switch (commands[i].charAt(0)) {
-                case 'F' :
-                    sequence.add(new MoveForwardAction());
-                    break;
-
-                case 'L' :
-                    sequence.add(new TurnLeftAction());
-                    break;
-
-                case 'R' :
-                    switch (commands[i].charAt(1)) {
-                        case 'I' :
-                            sequence.add(new TurnRightAction());
-                            break;
-
-                        case 'E' :
-                            int times = Integer.parseInt(commands[i].split(" ")[1]);
-                            SequenceOfActions actionSequence = (SequenceOfActions)parse(Arrays.copyOfRange(commands, i + 1 /*i++ breaks obv*/, commands.length));
-                            sequence.add(new RepeatAction(times, actionSequence));
-                            i += actionSequence.length + 1;
-                            break;
+            switch (commands[i].split(" ")[0]) {
+                case "FORWARD" -> {
+                    if (commands[i].split(" ").length > 1) {
+                        throw new IllegalArgumentException("FORWARD can't be floowed by numbers");
                     }
-                    break;
-
-                case 'E' :
+                    sequence.add(new MoveForwardAction());
+                }
+                case "LEFT" -> {
+                    if (commands[i].split(" ").length > 1) {
+                        throw new IllegalArgumentException("FORWARD can't be floowed by numbers");
+                    }
+                    sequence.add(new TurnLeftAction());
+                }
+                case "RIGHT" -> {
+                    if (commands[i].split(" ").length > 1) {
+                        throw new IllegalArgumentException("FORWARD can't be floowed by numbers");
+                    }
+                    sequence.add(new TurnRightAction());
+                }
+                case "REPEAT" -> {
+                    int times = Integer.parseInt(commands[i].split(" ")[1]);
+                    SequenceOfActions actionSequence = (SequenceOfActions) parse(Arrays.copyOfRange(commands, i + 1, commands.length));
+                    sequence.add(new RepeatAction(times, actionSequence));
+                    i += actionSequence.length + 1;
+                }
+                case "END" -> {
                     return sequence;
+                }
             }
         }
         return sequence;
     }
-
 
 
 }

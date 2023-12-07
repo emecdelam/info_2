@@ -218,6 +218,7 @@ public class RobotActionFactory {
                     int times = Integer.parseInt(commands[i].split(" ")[1]);
                     SequenceOfActions actionSequence = (SequenceOfActions) parse(Arrays.copyOfRange(commands, i + 1 /*i++ breaks obv*/, commands.length));
                     sequence.add(new RepeatAction(times, actionSequence));
+                    sequence.length += actionSequence.length;
                     i += actionSequence.length + 1;
                 }
                 case "END" -> {

@@ -199,7 +199,8 @@ public class RobotActionFactory {
         SequenceOfActions sequence = new SequenceOfActions();
         int count = 0;
         for (String command:commands){
-            if (command.startsWith("REPEAT")){count++;} else if (command.startsWith("END")) {count--;}
+            if (command.startsWith("REPEAT")){count++;}
+            else if (command.startsWith("END")) {count--;}
         }
         if (count > 0){throw new IllegalArgumentException("Missing END statement");}
         for (int i = 0; i < commands.length; i++) {
@@ -218,7 +219,7 @@ public class RobotActionFactory {
                 }
                 case "REPEAT" -> {
                     int times = Integer.parseInt(commands[i].split(" ")[1]);
-                    SequenceOfActions actionSequence = (SequenceOfActions) parse(Arrays.copyOfRange(commands, i + 1, commands.length));
+                    SequenceOfActions actionSequence = (SequenceOfActions) parse(Arrays.copyOfRange(commands, i + 1 /*i++ breaks obv*/, commands.length));
                     sequence.add(new RepeatAction(times, actionSequence));
                     i += actionSequence.length + 1;
                 }
@@ -229,6 +230,4 @@ public class RobotActionFactory {
         }
         return sequence;
     }
-
-
 }

@@ -205,21 +205,15 @@ public class RobotActionFactory {
         for (int i = 0; i < commands.length; i++) {
             switch (commands[i].split(" ")[0]) {
                 case "FORWARD" -> {
-                    if (commands[i].split(" ").length > 1) {
-                        throw new IllegalArgumentException("FORWARD can't be floowed by numbers");
-                    }
+                    if (commands[i].split(" ").length > 1) {throw new IllegalArgumentException("FORWARD can't be folowed by numbers");}
                     sequence.add(new MoveForwardAction());
                 }
                 case "LEFT" -> {
-                    if (commands[i].split(" ").length > 1) {
-                        throw new IllegalArgumentException("FORWARD can't be floowed by numbers");
-                    }
+                    if (commands[i].split(" ").length > 1) {throw new IllegalArgumentException("LEFT can't be folowed by numbers");}
                     sequence.add(new TurnLeftAction());
                 }
                 case "RIGHT" -> {
-                    if (commands[i].split(" ").length > 1) {
-                        throw new IllegalArgumentException("FORWARD can't be floowed by numbers");
-                    }
+                    if (commands[i].split(" ").length > 1) {throw new IllegalArgumentException("RIGHT can't be floowed by numbers");}
                     sequence.add(new TurnRightAction());
                 }
                 case "REPEAT" -> {

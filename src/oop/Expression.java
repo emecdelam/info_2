@@ -109,7 +109,7 @@ class Addition extends Expression{
 
     @Override
     public Expression derivate() {
-        return a.derivate().plus(b.derivate());
+        return new Addition(a.derivate(),b.derivate());
     }
 }
 class Substraction extends Expression{
@@ -126,7 +126,7 @@ class Substraction extends Expression{
 
     @Override
     public Expression derivate() {
-        return a.derivate().minus(b.derivate());
+        return new Substraction(a.derivate(),b.derivate());
     }
 }
 class Multiplication extends Expression{
@@ -143,6 +143,6 @@ class Multiplication extends Expression{
 
         @Override
         public Expression derivate() {
-            return a.mul(b.derivate()).plus(a.derivate().mul(b));
+        return new Addition(new Multiplication(a.derivate(),b),new Multiplication(b.derivate(),a));
         }
     }

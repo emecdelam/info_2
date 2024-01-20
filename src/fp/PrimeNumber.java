@@ -1,5 +1,6 @@
 package fp;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
@@ -63,6 +64,10 @@ public class PrimeNumber {
 
 
 
+    }
+    public static void main(String[] args){
+        IntStream stream = primeStreamFrom(1000000);
+        System.out.println(Arrays.toString(stream.limit(1500000).toArray()));
     }
 
 }

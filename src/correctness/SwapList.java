@@ -43,13 +43,14 @@ public interface SwapList {
      */
     public static void sort(SwapList list) {
         // The Loop with an invariant that you should maintain
-
-        for(int iter = 0; iter < list.getSize() - 1; iter++) {
-            if (list.getSecond() > list.getFirst()){
-                list.swap();
+        for (int i =0 ; i< list.getSize()-1; i++){
+            for(int iter = 0; iter < list.getSize() - 1 - iter; iter++) {
+                if (list.getSecond() > list.getFirst()){
+                    list.swap();
+                }
             }
+	    list.pop();
         }
 
-        // Here, if you followed the invariant proposed above, the list should be sorted!
     }
 }

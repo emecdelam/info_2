@@ -73,47 +73,45 @@ public class CircularLinkedList {
     }
 
     public int remove(int index) {
-        if (!this.isEmpty()) {
-            if (this.first.isPresent()) {
-                if (index == 0) {
-                    // Special case: Remove the first element
-                    int removedValue = this.first.get().value;
-                    this.first = this.first.get().next;
-                    this.size--;
+        if (this.isEmpty() || this.first.isEmpty()){
+            return -1;
+        }
+        if (index == 0) {
+            // Special case: Remove the first element
+            int removedValue = this.first.get().value;
+            this.first = this.first.get().next;
+            this.size--;
 
-                    // If the list becomes empty after removal, also update last
-                    if (this.isEmpty()) {
-                        this.last = Optional.empty();
-                    }
-                    return removedValue;
-                } else {
-                    Node current = this.first.get();
-                    int count = 1;
+            // If the list becomes empty after removal, also update last
+            if (this.isEmpty()) {
+                this.last = Optional.empty();
+            }
+            return removedValue;
+        } else {
+            Node current = this.first.get();
+            int count = 1;
 
-                    while (count < index && current.next != this.last && current.next.isPresent()) {
-                        current = current.next.get();
-                        count++;
-                    }
+            while (count < index && current.next != this.last && current.next.isPresent()) {
+                current = current.next.get();
+                count++;
+            }
 
-                    if (count == index && current.next.isPresent()) {
-                        int removedValue = current.next.get().value;
-                        Node next = current.next.get();
-                        if (next.next.isPresent()){
-                            current.setNext(next.next.get());
-                        }
-
-                        this.size--;
-
-                        // If the last element was removed, update last
-                        if (!current.hasNext()) {
-                            this.last = Optional.of(current);
-                        }
-                        return removedValue;
-                    }
+            if (count == index && current.next.isPresent()) {
+                int removedValue = current.next.get().value;
+                Node next = current.next.get();
+                if (next.next.isPresent()){
+                    current.setNext(next.next.get());
                 }
+
+                this.size--;
+
+                // If the last element was removed, update last
+                if (!current.hasNext()) {
+                    this.last = Optional.of(current);
+                }
+                return removedValue;
             }
         }
         return -1; // Index out of bounds or list is empty
     }
-
 }

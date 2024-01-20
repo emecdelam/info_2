@@ -134,6 +134,10 @@ public class BrickCounter {
         int dividing = (int) Math.ceil((double) bricks.length / 2);
         Brick[] bricks1 = Arrays.copyOfRange(bricks, 0, dividing);
         Brick[] bricks2 = Arrays.copyOfRange(bricks, dividing, bricks.length);
+
+
+
+
         Future<int[]> future1 = executor.submit(()->countBricks(bricks1,n,sorter));
         Future<int[]> future2 = executor.submit(()->countBricks(bricks2,n,sorter));
         int[] res = new int[n];

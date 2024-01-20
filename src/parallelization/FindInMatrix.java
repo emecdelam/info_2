@@ -65,8 +65,8 @@ public class FindInMatrix {
                 }
                 return new Result(currentRow,list);
             };
-            Future<Result> future = executorService.submit(task);
-            futureresults.add(future);
+
+            futureresults.add( executorService.submit(task));
         }
         executorService.shutdown();
         Result maxres = null;
@@ -77,7 +77,6 @@ public class FindInMatrix {
                 if (res.numberOfOccurence() > max){
                     max = res.numberOfOccurence();
                     maxres = res;
-
                 }
             } catch (ExecutionException | InterruptedException e) {
                 throw new RuntimeException(e);
